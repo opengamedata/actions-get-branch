@@ -29,7 +29,7 @@ runs:
   using: "composite"
   steps:
     - name: Announce initial branch name
-      if: inputs.debug == "true"
+      if: inputs.debug == 'true'
       run: echo "Splitting " ${{ github.ref_name }}
       shell: ${{ inputs.shell }}
     - name: Get Branch Name
@@ -39,6 +39,6 @@ runs:
          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
     - name: Announce extracted branch name
-      if: inputs.debug == "true"
+      if: inputs.debug == 'true'
       run: echo "After split, branch is ${{ steps.get_branch.outputs.branch_name }}"
       shell: ${{ inputs.shell }}
