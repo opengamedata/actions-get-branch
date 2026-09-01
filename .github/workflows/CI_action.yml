@@ -1,5 +1,5 @@
 # Workflow to test out the action on any change
-name: Action: Get Branch - CI Script
+name: Action - Get Branch - CI Script
 run-name: ${{ format('{0} - {1}', github.workflow, github.event_name == 'push' && github.event.head_commit.message || 'Manual Run') }}
 on:
   push:
