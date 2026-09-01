@@ -16,3 +16,8 @@ jobs:
       uses: ./
       with:
         debug: "true"
+    - name: Run Action with n=2
+      uses: ./
+      with:
+        n: 2
+        debug: "true"
