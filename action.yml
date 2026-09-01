@@ -24,7 +24,7 @@ inputs:
 outputs:
   branch-name:
     description: "The first n characters of the branch name"
-    value: ${{ steps.foo.outputs.branch-name }}
+    value: ${{ steps.get_branch.outputs.branch_name }}
 runs:
   using: "composite"
   steps:
@@ -33,15 +33,12 @@ runs:
       run: echo "Splitting " ${{ github.ref_name }}
       shell: ${{ inputs.shell }}
     - name: Get Branch Name
-      if: ${{ inputs.debug != "true" }}
+      id: get_branch
       run: |
         BRANCH=$(echo "${{ github.ref_name }}" | awk '{ print(substr(arr[split($0, arr, "/")], 1, 10)) }')
-        echo "branch_tag=$BRANCH" >> "$GITHUB_OUTPUT"
+         echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
-    - name: Get Branch Name
+    - name: Announce extracted branch name
       if: ${{ inputs.debug == "true" }}
-      run: |
-        BRANCH=$(echo "${{ github.ref_name }}" | awk '{ print(substr(arr[split($0, arr, "/")], 1, 10)) }')
-        echo "After split, branch is $BRANCH"
-        echo "branch_tag=$BRANCH" >> "$GITHUB_OUTPUT"
+      run: echo "After split, branch is ${{ steps.get_branch.outputs.branch_name }}"
       shell: ${{ inputs.shell }}
