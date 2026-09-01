@@ -1,0 +1,16 @@
+# Workflow to test out the action on any change
+name: Action: Get Branch - CI Script
+run-name: ${{ format('{0} - {1}', github.workflow, github.event_name == 'push' && github.event.head_commit.message || 'Manual Run') }}
+on:
+  push:
+  workflow_dispatch: # Allow manual trigger of this workflow from the Actions tab
+
+jobs:
+  test_action:
+    name: Test "Get Branch" Action
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Run Action
+      uses: opengamedata/actions-get-branch
+      with:
+        debub: "true"
