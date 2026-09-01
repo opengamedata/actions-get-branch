@@ -13,6 +13,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v7.0.1
     - name: Run Action
-      uses: ./action.yml
+      uses: ./
       with:
-        debub: "true"
+        debug: "true"
