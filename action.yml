@@ -35,7 +35,7 @@ runs:
     - name: Get Branch Name
       id: get_branch
       run: |
-        BRANCH=$(echo "${{ github.ref_name }}" | awk '{ print(substr(arr[split($0, arr, "/")], 1, 10)) }')
+        BRANCH=$(echo "${{ github.ref_name }}" | awk '{ print(substr(arr[split($0, arr, "/")], 1, ${{ inputs.n }})) }')
          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
     - name: Announce extracted branch name
