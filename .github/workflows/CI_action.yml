@@ -24,6 +24,5 @@ jobs:
     - name: Run Action with remove=.
       uses: ./
       with:
-        n: 2
         remove: "\\."
         debug: "true"
