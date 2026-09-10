@@ -21,3 +21,8 @@ jobs:
       with:
         n: 2
         debug: "true"
+    - name: Run Action with remove=.
+      uses: ./
+      with:
+        remove: "\\."
+        debug: "true"
