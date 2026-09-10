@@ -13,6 +13,10 @@ inputs:
     description: "The separator used to split branch prefixes"
     required: false
     default: "/"
+  remove:
+    description: "A valid sed search expression, which will be removed from the branch name. This is applied before shortening to n characters."
+    required: false
+    default: " "
   debug:
     description: "Whether to include extra debug prints to check the input and output"
     required: false
@@ -47,7 +51,7 @@ runs:
     - name: Get Branch Name
       id: get_branch
       run: |
-        BRANCH=$(echo "${{ github.ref_name }}" | awk '{ print(substr(arr[split($0, arr, "/")], 1, ${{ inputs.n }})) }')
+        BRANCH=$(echo "${{ github.ref_name }}" | sed 's/${{ inputs.remove }}//g' | awk '{ print(substr(arr[split($0, arr, "/")], 1, ${{ inputs.n }})) }')
          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
     - name: Announce extracted branch name
