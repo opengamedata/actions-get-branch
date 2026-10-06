@@ -26,3 +26,9 @@ jobs:
       with:
         remove: "\\."
         debug: "true"
+    - name: Run Action with hash
+      uses: ./
+      with:
+        with_hash: "true"
+        hash_n: 4
+        debug: "true"

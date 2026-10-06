@@ -17,6 +17,14 @@ inputs:
     description: "A valid sed search expression, which will be removed from the branch name. This is applied before shortening to n characters."
     required: false
     default: " "
+  with_hash:
+    description: "Whether to append a portion of the commit hash as part of the branch name."
+    required: false
+    default: "false"
+  hash_n:
+    description: "The number of characters of the commit hash to append to the branch name."
+    required: false
+    default: 4
   debug:
     description: "Whether to include extra debug prints to check the input and output"
     required: false
@@ -48,11 +56,27 @@ runs:
       #    * `print(substr(...))
       #  5. Then we pipe to echo, where we construct the output string
       #    * "branch_tag=<result from awk>"
-    - name: Get Branch Name
-      id: get_branch
+    - name: Extract Branch Substring
+      id: get_raw_branch
       run: |
         BRANCH=$(echo "${{ github.ref_name }}" | sed 's/${{ inputs.remove }}//g' | awk '{ print(substr(arr[split($0, arr, "/")], 1, ${{ inputs.n }})) }')
          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
+      shell: ${{ inputs.shell }}
+    - name: Extract Hash (if requested)
+      id: get_hash
+      if: inputs.with_hash == 'true'
+      run: |
+        HASH=$(echo "${{ github.sha }}" | awk '{ print(substr($0, 1, ${{ inputs.hash_n }})) }')
+        echo "hash=$HASH" >> "$GITHUB_OUTPUT"
+      shell: ${{ inputs.shell }}
+    - name: Get Branch Name
+      id: get_branch
+      run: |
+        if [ "${{ inputs.with_hash }}" == "true" ]; then
+          echo "branch_name=${{ steps.get_raw_branch.outputs.branch_name }}-${{ steps.get_hash.outputs.hash }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "branch_name=${{ steps.get_raw_branch.outputs.branch_name }}" >> "$GITHUB_OUTPUT"
+        fi
       shell: ${{ inputs.shell }}
     - name: Announce extracted branch name
       if: inputs.debug == 'true'
