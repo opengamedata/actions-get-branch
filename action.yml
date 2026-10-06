@@ -56,23 +56,24 @@ runs:
       #    * `print(substr(...))
       #  5. Then we pipe to echo, where we construct the output string
       #    * "branch_tag=<result from awk>"
-    - name: Get Branch Name
+    - name: Extract Branch Substring
       id: get_raw_branch
       run: |
         BRANCH=$(echo "${{ github.ref_name }}" | sed 's/${{ inputs.remove }}//g' | awk '{ print(substr(arr[split($0, arr, "/")], 1, ${{ inputs.n }})) }')
          echo "branch_name=$BRANCH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
-    - name: Append commit hash to branch name
+    - name: Extract Hash (if requested)
+      id: get_hash
       if: inputs.with_hash == 'true'
       run: |
         HASH=$(echo "${{ github.sha }}" | awk '{ print(substr($0, 1, ${{ inputs.hash_n }})) }')
         echo "hash=$HASH" >> "$GITHUB_OUTPUT"
       shell: ${{ inputs.shell }}
-    - name: Get Final Branch Name
+    - name: Get Branch Name
       id: get_branch
       run: |
         if [ "${{ inputs.with_hash }}" == "true" ]; then
-          echo "branch_name=${{ steps.get_raw_branch.outputs.branch_name }}-${{ steps.get_final_hash.outputs.hash }}" >> "$GITHUB_OUTPUT"
+          echo "branch_name=${{ steps.get_raw_branch.outputs.branch_name }}-${{ steps.get_hash.outputs.hash }}" >> "$GITHUB_OUTPUT"
         else
           echo "branch_name=${{ steps.get_raw_branch.outputs.branch_name }}" >> "$GITHUB_OUTPUT"
         fi
